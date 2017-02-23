@@ -1,27 +1,40 @@
 package com.heqaing.test;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class Test_clazz {
 
 	public static void main(String[] args) throws IOException {
-			try {
-				BufferedInputStream bis = new BufferedInputStream(new FileInputStream("D:\\test\\origin.mkv"));
-				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("D:\\test\\cope2.mkv"));
-				byte[] bytes = new byte[1870];
-				long t1 = System.currentTimeMillis();
-				int i;
-				while ((i=bis.read(bytes,0,1870))!=-1){
-					bos.write(bytes,0,i);
-				}
-				long t2 = System.currentTimeMillis();
-				System.out.println(t2-t1);
-				bis.close();
-				bos.close();
-			} catch (IOException e) {
-				System.err.println("FileStreamsTest: " + e);
-			}
-
-
+		int count = 1000000;
+		int limit = 10000;
+		Random random = new Random();
+		int[] arr = new int[count];
+		long t0 = System.nanoTime();
+		for(int i=0;i<count;i++){
+			arr[i] = random.nextInt(limit);
+		}
+		long tt = System.nanoTime();
+		System.out.println(tt-t0);
+		System.out.println("随机数产生完毕...");
+		long t1 = System.nanoTime();
+		Set<Integer> set = new HashSet<>();
+		for(int i=0;i<count;i++){
+			set.add(arr[i]);
+		}
+		long t2 = System.nanoTime();
+		List<Integer> list = new ArrayList<>();
+		for(int i=0;i<count;i++){
+			if(list.contains(arr[i])) continue;
+			list.add(arr[i]);
+		}
+		long t3 = System.nanoTime();
+		System.out.println("HashSet  :"+(t2-t1));
+		System.out.println("ArrayList:"+(t3-t2));
+		
 	}
 }
