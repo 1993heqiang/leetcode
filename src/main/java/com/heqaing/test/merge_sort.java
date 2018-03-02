@@ -3,7 +3,7 @@ package com.heqaing.test;
 import java.util.Arrays;
 
 public class merge_sort {
-	/** 
+	/**
      * 归并排序 
      * 简介:将两个（或两个以上）有序表合并成一个新的有序表 即把待排序序列分为若干个子序列，每个子序列是有序的。然后再把有序子序列合并为整体有序序列 
      * 时间复杂度为O(nlogn) 
@@ -58,7 +58,9 @@ public class merge_sort {
 	public static void main(String[] args) {
 	        int[] nums = { 2, 7, 8, 3, 1, 6, 9, 0, 5, 4 };  
 	        merge_sort.sort(nums, 0, nums.length-1);  
-	        System.out.println(Arrays.toString(nums));  
-	}
+	        System.out.println(Arrays.toString(nums));
+
+    }
+
 }	 
 
