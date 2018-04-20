@@ -16,14 +16,13 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
-//import org.junit.Test;
 
 public class ExampleTest1 {
 	/*
 	 * 题目：古典问题：有一对兔子，从出生后第3个月起每个月都生一对兔子，小兔子长
 	 * 到第三个月后每个月又生一对兔子，假如兔子都不死，问每个月的兔子总数为多少？ 
 	 */
-//	@Test
+
 	public void Demo1(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("请输入月份：");

@@ -1,13 +1,10 @@
 package com.heqaing.exercise;
 
-import org.junit.Test;
-
 import java.util.*;
 import java.util.Map.Entry;
 
 public class ExampleTest {
 	//求  a+aa+aaa+.......+aaaaaaaaa=?其中a为1至9之中的一个数，项数也要可以指定。
-@Test
 	public void  Demo01(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("请输入1~9之间的任意一个数：");
@@ -24,7 +21,7 @@ public class ExampleTest {
 		System.out.println("结果为："+sum);
 	}
 	//求 2/1+3/2+5/3+8/5+13/8.....前20项之和？
-//	@Test
+
 	public void Demo02(){
 		double sum=0;
 		double fz=2;
@@ -40,7 +37,7 @@ public class ExampleTest {
 		System.out.println("结果为："+sum);
 	}
 	//重点
-//	@Test 
+ 
 	public void Demo03(){
 		for (int i=1; i<=13; i+=2){
             for(int j=1; j<=i && i+j<= 14; j++){
@@ -83,7 +80,7 @@ public class ExampleTest {
 		}
 		System.out.println(sum);
 	}
-//	@Test
+
 	public void Demo05b(){
 		double sum=0;
 		int fm=1;
@@ -116,7 +113,7 @@ public class ExampleTest {
 	 * 歌德巴赫猜想,任何一个大于六的偶数可以拆分成两个质数的和
              打印出所有的可能
 	 */
-//	@Test
+
 	public void Demo07(){
 		Scanner sc=new Scanner(System.in);
 		System.out.println("请输入一个大于6的偶数：");
@@ -188,7 +185,7 @@ public class ExampleTest {
              即，a[0]=a[1],a[1]=a[2],…最后一个元素的值是原来第一个元
              素的值，然后输出这个数组。
 	 */
-//	@Test
+
 	public void Demo09(){
 		int[] arr=new int[10];
 		for(int i=0;i<10;i++){
@@ -211,7 +208,7 @@ public class ExampleTest {
 	     将它们存储到一维数组中，然后统计成绩低于平均分的学员的人数，
 	     并输出出来。
 	 */
-//	@Test
+
 	public void Demo10(){
 		int[] scores=new int[40];
 		int sum=0;
@@ -276,7 +273,7 @@ public class ExampleTest {
 	 * 求余等于0的个数，保存 到b[0]中；对10求余等于1的个数，保存
 	 * 到b[1]中，……依此类推。
 	 */
-//	@Test
+
 	public void Demo13(){
 		int[] a=new int[100];
 		int[] b=new int[10];
@@ -301,7 +298,7 @@ public class ExampleTest {
    		（4）要求编写程序求所有学员的某门课程的平均分。
 
 	 */
-//	@Test
+
 	public void Demo14(){
 		int[][] studentsScore=new int[20][5];
 		for(int i=0;i<20;i++){
@@ -347,7 +344,7 @@ public class ExampleTest {
         		  如果有两边越界，则填到刚才位置的底下一格。
 
 	 */
-//	@Test
+
 	public void Demo15(){
 		// 定义 N 为九宫格的行列数，需要输入
         System.out.println("请输入九宫格的行列规模(只能是奇数的):");
@@ -392,7 +389,7 @@ public class ExampleTest {
 	/*
 	 * 求一个3*3矩阵对角线元素之和  
 	 */
-//	@Test
+
 	public void Demo16(){
 		int[][] arr=new int[3][3];
 		for(int i=0;i<arr.length;i++){
@@ -420,7 +417,7 @@ public class ExampleTest {
 	}
 	/*********************重点*********************/
 	//打印杨辉三角
-//	@Test
+
 	public void Demo17(){
 		Scanner suin=new Scanner(System.in);
 		System.out.println("请输入一个大于3的数：");
@@ -441,7 +438,7 @@ public class ExampleTest {
 			System.out.println();
 		}
 	}
-//	@Test
+
 	public void Demo17_01(){
 		int[][] pas = new int[6][];
 		for(int i = 0; i < pas.length; i++){
