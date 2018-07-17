@@ -36,19 +36,18 @@ public class Trains {
             System.out.println(stack.pop());
         }
         System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.lengthOfShortestRoute("A", "C"));
-        System.out.println("详细路径:");
-        while (!stack.isEmpty()) {
-            System.out.println(stack.pop());
+        String shortest = trains.lengthOfShortestRoute("A", "C");
+        if ("-1".equals(shortest)) {
+            System.out.println("NO SUCH ROUTE");
+        } else {
+            System.out.println(shortest);
+            System.out.println("详细路径:");
+            while (!stack.isEmpty()) {
+                System.out.println(stack.pop());
+            }
         }
         System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.lengthOfShortestRoute("C", "C"));
-        System.out.println("详细路径:");
-        while (!stack.isEmpty()) {
-            System.out.println(stack.pop());
-        }
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.numberOfRoutes("C", "C", 30));
+        System.out.println(trains.numberOfRoutes("C", "C", 3));
         System.out.println("详细路径:");
         while (!stack.isEmpty()) {
             System.out.println(stack.pop());
@@ -96,10 +95,12 @@ public class Trains {
      * @param maxLength
      * @return
      */
-    public int numberOfRoutes(String pointA, String pointB, int maxLength) {
+    public String numberOfRoutes(String pointA, String pointB, int maxLength) {
         stack.clear();
         int a = cities.indexOf(pointA);
+        if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
+        if(b==-1) return pointB + "is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -111,7 +112,7 @@ public class Trains {
                 traverse1(i, b, pointA + "-" + cities.get(i), line[i], maxLength);
             }
         }
-        return stack.size();
+        return String.valueOf(stack.size());
     }
 
     private void traverse1(int a, int b, String route, int curLength, int maxLength) {
@@ -141,9 +142,15 @@ public class Trains {
      */
     public String distanceOfRoute(String... args) {
         int len = args.length;
+        if (len < 2) return "NO SUCH ROUTE";
         int[] points = new int[len];
+        int index;
         for (int i = 0; i < len; i++) {
-            points[i] = cities.indexOf(args[i]);
+            index = cities.indexOf(args[i]);
+            if(index==-1){
+                return args[i]+" is not exist;";
+            }
+            points[i] = index;
         }
         int totalDistance = 0;
         for (int i = 1; i < len; i++) {
@@ -164,10 +171,13 @@ public class Trains {
      * @param pointB
      * @return
      */
-    public int lengthOfShortestRoute(String pointA, String pointB) {
+    public String lengthOfShortestRoute(String pointA, String pointB) {
+        minLength = -1;
         stack.clear();
         int a = cities.indexOf(pointA);
+        if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
+        if(b==-1) return pointB + "is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -178,7 +188,7 @@ public class Trains {
                 traverse(i, b, pointA + "-" + cities.get(i), line[i]);
             }
         }
-        return minLength;
+        return String.valueOf(minLength);
     }
 
     private void traverse(int a, int b, String route, int curLength) {
@@ -202,6 +212,8 @@ public class Trains {
                         stack.push(route + "-" + cities.get(i));
                     }
                     continue;
+                } else if (route.contains(cities.get(i))) {
+                    continue;
                 }
                 traverse(i, b, route + "-" + cities.get(i), temp);
             }
@@ -216,10 +228,12 @@ public class Trains {
      * @param stops
      * @return
      */
-    public int numberOfRouteExactlyStops(String pointA, String pointB, int stops) {
+    public String numberOfRouteExactlyStops(String pointA, String pointB, int stops) {
         stack.clear();
         int a = cities.indexOf(pointA);
+        if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
+        if(b==-1) return pointB + "is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -229,7 +243,7 @@ public class Trains {
                 traverse2(i, b, pointA + "-" + cities.get(i), stops - 1);
             }
         }
-        return stack.size();
+        return String.valueOf(stack.size());
     }
 
     private void traverse2(int a, int b, String route, int stops) {
@@ -256,11 +270,13 @@ public class Trains {
      * @param maxStops
      * @return
      */
-    public int numberOfRouteMaxStops(String pointA, String pointB, int maxStops) {
+    public String numberOfRouteMaxStops(String pointA, String pointB, int maxStops) {
         stack.clear();
         int ret = 0;
         int a = cities.indexOf(pointA);
+        if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
+        if(b==-1) return pointB + "is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -268,7 +284,7 @@ public class Trains {
                 ret += handleNumberOfRoute(i, b, maxStops - 1, pointA + "-" + cities.get(i));
             }
         }
-        return ret;
+        return String.valueOf(ret);
     }
 
     private int handleNumberOfRoute(int a, int b, int maxStops, String route) {
