@@ -143,7 +143,7 @@ public class Trains {
         int len = args.length;
         int[] points = new int[len];
         for (int i = 0; i < len; i++) {
-            points[i] = args[i].charAt(0) - 'A';
+            points[i] = cities.indexOf(args[i]);
         }
         int totalDistance = 0;
         for (int i = 1; i < len; i++) {
