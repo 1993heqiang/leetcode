@@ -98,8 +98,8 @@ public class Trains {
      */
     public int numberOfRoutes(String pointA, String pointB, int maxLength) {
         stack.clear();
-        int a = pointA.charAt(0) - 'A';
-        int b = pointB.charAt(0) - 'A';
+        int a = cities.indexOf(pointA);
+        int b = cities.indexOf(pointB);
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -166,8 +166,8 @@ public class Trains {
      */
     public int lengthOfShortestRoute(String pointA, String pointB) {
         stack.clear();
-        int a = pointA.charAt(0) - 'A';
-        int b = pointB.charAt(0) - 'A';
+        int a = cities.indexOf(pointA);
+        int b = cities.indexOf(pointB);
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -218,8 +218,8 @@ public class Trains {
      */
     public int numberOfRouteExactlyStops(String pointA, String pointB, int stops) {
         stack.clear();
-        int a = pointA.charAt(0) - 'A';
-        int b = pointB.charAt(0) - 'A';
+        int a = cities.indexOf(pointA);
+        int b = cities.indexOf(pointB);
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
@@ -259,8 +259,8 @@ public class Trains {
     public int numberOfRouteMaxStops(String pointA, String pointB, int maxStops) {
         stack.clear();
         int ret = 0;
-        int a = pointA.charAt(0) - 'A';
-        int b = pointB.charAt(0) - 'A';
+        int a = cities.indexOf(pointA);
+        int b = cities.indexOf(pointB);
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
