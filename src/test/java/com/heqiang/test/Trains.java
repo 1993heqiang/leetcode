@@ -1,5 +1,7 @@
 package com.heqiang.test;
 
+import java.io.File;
+import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,7 +13,14 @@ public class Trains {
     public List<String> cities;
 
     public static void main(String[] args) {
-        String input = " AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+        String input;
+/*        String path = "file_path";
+        input = Trains.file2String(path);
+        if("".equals(input)){
+            System.out.println("Reading file has a Exception!");
+            System.exit(0);
+        }*/
+        input = " AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
         Trains trains = new Trains(input);
         Stack<String> stack = trains.stack;
         System.out.println(trains.distanceOfRoute("A", "B", "C"));
@@ -47,7 +56,7 @@ public class Trains {
             }
         }
         System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.numberOfRoutes("C", "C", 3));
+        System.out.println(trains.numberOfRoutes("C", "C", 30));
         System.out.println("详细路径:");
         while (!stack.isEmpty()) {
             System.out.println(stack.pop());
@@ -85,6 +94,32 @@ public class Trains {
             result[cities.indexOf(pointA)][cities.indexOf(pointB)] = distance;
         });
         return result;
+    }
+
+    public static String file2String(String path){
+        File input = new File(path);
+        if(!input.exists()||!input.isFile()){
+            throw new RuntimeException("File not exist");
+        }
+        FileReader fileReader = null;
+        try {
+            fileReader = new FileReader(input);
+            int fileLen = (int)input.length();
+            char[] chars = new char[fileLen];
+            fileReader.read(chars);
+            return String.valueOf(chars);
+        }catch (Exception e){
+
+        }finally {
+            if(fileReader!=null){
+                try {
+                    fileReader.close();
+                }catch (Exception e){
+
+                }
+            }
+        }
+        return "";
     }
 
     /**
