@@ -7,61 +7,9 @@ import java.util.stream.Collectors;
 
 public class Trains {
 
-    public int minLength = -1;
-    public Stack<String> stack = new Stack<>();
     public int[][] data;
     public List<String> cities;
 
-    public static void main(String[] args) {
-        String input;
-/*        String path = "file_path";
-        input = Trains.file2String(path);
-        if("".equals(input)){
-            System.out.println("Reading file has a Exception!");
-            System.exit(0);
-        }*/
-        input = " AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
-        Trains trains = new Trains(input);
-        Stack<String> stack = trains.stack;
-        System.out.println(trains.distanceOfRoute("A", "B", "C"));
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.distanceOfRoute("A", "D"));
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.distanceOfRoute("A", "D", "C"));
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.distanceOfRoute("A", "E", "B", "C", "D"));
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.distanceOfRoute("A", "E", "D"));
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.numberOfRouteMaxStops("C", "C", 3));
-        System.out.println("详细路径:");
-        while (!stack.isEmpty()) {
-            System.out.println(stack.pop());
-        }
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.numberOfRouteExactlyStops("A", "C", 4));
-        System.out.println("详细路径:");
-        while (!stack.isEmpty()) {
-            System.out.println(stack.pop());
-        }
-        System.out.println("-------------------------------------------------------------");
-        String shortest = trains.lengthOfShortestRoute("A", "C");
-        if ("-1".equals(shortest)) {
-            System.out.println("NO SUCH ROUTE");
-        } else {
-            System.out.println(shortest);
-            System.out.println("详细路径:");
-            while (!stack.isEmpty()) {
-                System.out.println(stack.pop());
-            }
-        }
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(trains.numberOfRoutes("C", "C", 30));
-        System.out.println("详细路径:");
-        while (!stack.isEmpty()) {
-            System.out.println(stack.pop());
-        }
-    }
 
     public Trains(String input) {
         cities = new ArrayList<>();
@@ -96,32 +44,6 @@ public class Trains {
         return result;
     }
 
-    public static String file2String(String path){
-        File input = new File(path);
-        if(!input.exists()||!input.isFile()){
-            throw new RuntimeException("File not exist");
-        }
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(input);
-            int fileLen = (int)input.length();
-            char[] chars = new char[fileLen];
-            fileReader.read(chars);
-            return String.valueOf(chars);
-        }catch (Exception e){
-
-        }finally {
-            if(fileReader!=null){
-                try {
-                    fileReader.close();
-                }catch (Exception e){
-
-                }
-            }
-        }
-        return "";
-    }
-
     /**
      * A -> B 点,距离小于 maxLength 的所有路径数
      *
@@ -130,8 +52,7 @@ public class Trains {
      * @param maxLength
      * @return
      */
-    public String numberOfRoutes(String pointA, String pointB, int maxLength) {
-        stack.clear();
+    public String numberOfRoutes(String pointA, String pointB, int maxLength, Deque<String> deque) {
         int a = cities.indexOf(pointA);
         if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
@@ -141,16 +62,16 @@ public class Trains {
             if (line[i] != -1 && a != i) {
                 if (i == b) {
                     if (line[i] < maxLength) {
-                        stack.push(String.valueOf(pointA + "-" + pointB));
+                        deque.push(String.valueOf(pointA + "-" + pointB));
                     }
                 }
-                traverse1(i, b, pointA + "-" + cities.get(i), line[i], maxLength);
+                traverse1(i, b, pointA + "-" + cities.get(i), line[i], maxLength, deque);
             }
         }
-        return String.valueOf(stack.size());
+        return String.valueOf(deque.size());
     }
 
-    private void traverse1(int a, int b, String route, int curLength, int maxLength) {
+    private void traverse1(int a, int b, String route, int curLength, int maxLength, Deque<String> deque) {
         int[] line = data[a];
         int temp;
         for (int i = 0; i < line.length; i++) {
@@ -161,10 +82,10 @@ public class Trains {
                 }
                 if (i == b) {
                     if (maxLength > temp) {
-                        stack.push(route + "-" + cities.get(i));
+                        deque.push(route + "-" + cities.get(i));
                     }
                 }
-                traverse1(i, b, route + "-" + cities.get(i), temp, maxLength);
+                traverse1(i, b, route + "-" + cities.get(i), temp, maxLength, deque);
             }
         }
     }
@@ -206,9 +127,7 @@ public class Trains {
      * @param pointB
      * @return
      */
-    public String lengthOfShortestRoute(String pointA, String pointB) {
-        minLength = -1;
-        stack.clear();
+    public String lengthOfShortestRoute(String pointA, String pointB, Deque<String> deque) {
         int a = cities.indexOf(pointA);
         if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
@@ -217,40 +136,50 @@ public class Trains {
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (i == b) {
-                    minLength = line[i];
-                    stack.push(String.valueOf(pointA + "-" + pointB));
+                    deque.push(String.valueOf(pointA + "-" + pointB));
                 }
-                traverse(i, b, pointA + "-" + cities.get(i), line[i]);
+                traverse(i, b, pointA + "-" + cities.get(i), line[i], deque);
             }
         }
-        return String.valueOf(minLength);
+        if(!deque.isEmpty()){
+            String shortestRoute = deque.peekFirst();
+            String[] cities = shortestRoute.split("-");
+            return distanceOfRoute(cities);
+        }
+        return "-1";
     }
 
-    private void traverse(int a, int b, String route, int curLength) {
+    private void traverse(int a, int b, String route, int curLength, Deque<String> deque) {
         int[] line = data[a];
         int temp;
+        int minLength;
+        if(!deque.isEmpty()){
+            String shortestRoute = deque.peekFirst();
+            String[] cities = shortestRoute.split("-");
+            minLength =  Integer.valueOf(distanceOfRoute(cities));
+        }else {
+            minLength = -1;
+        }
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1) {
                 temp = curLength + line[i];
-                if (minLength != -1 && temp > minLength) {
+                if (minLength > 0  && temp > minLength) {
                     continue;
                 }
                 if (i == b) {
                     if (minLength == -1) {
-                        minLength = temp;
-                        stack.push(route + "-" + cities.get(i));
+                        deque.push(route + "-" + cities.get(i));
                     } else if (minLength == temp) {
-                        stack.push(route + "-" + cities.get(i));
+                        deque.push(route + "-" + cities.get(i));
                     } else if (minLength > temp) {
-                        minLength = temp;
-                        stack.clear();
-                        stack.push(route + "-" + cities.get(i));
+                        deque.clear();
+                        deque.push(route + "-" + cities.get(i));
                     }
                     continue;
                 } else if (route.contains(cities.get(i))) {
                     continue;
                 }
-                traverse(i, b, route + "-" + cities.get(i), temp);
+                traverse(i, b, route + "-" + cities.get(i), temp, deque);
             }
         }
     }
@@ -263,8 +192,7 @@ public class Trains {
      * @param stops
      * @return
      */
-    public String numberOfRouteExactlyStops(String pointA, String pointB, int stops) {
-        stack.clear();
+    public String numberOfRouteExactlyStops(String pointA, String pointB, int stops, Deque<String> deque) {
         int a = cities.indexOf(pointA);
         if(a==-1) return pointA + "is not exist";
         int b = cities.indexOf(pointB);
@@ -273,23 +201,23 @@ public class Trains {
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (stops == 1 && i == b) {
-                    stack.push(String.valueOf(pointA + "-" + pointB));
+                    deque.push(String.valueOf(pointA + "-" + pointB));
                 }
-                traverse2(i, b, pointA + "-" + cities.get(i), stops - 1);
+                traverse2(i, b, pointA + "-" + cities.get(i), stops - 1, deque);
             }
         }
-        return String.valueOf(stack.size());
+        return String.valueOf(deque.size());
     }
 
-    private void traverse2(int a, int b, String route, int stops) {
+    private void traverse2(int a, int b, String route, int stops, Deque<String> deque) {
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1) {
                 if (stops > 1) {
-                    traverse2(i, b, route + "-" + cities.get(i), stops - 1);
+                    traverse2(i, b, route + "-" + cities.get(i), stops - 1, deque);
                 } else {
                     if (i == b) {
-                        stack.push(route + "-" + cities.get(i));
+                        deque.push(route + "-" + cities.get(i));
                         return;
                     }
                 }
@@ -305,8 +233,7 @@ public class Trains {
      * @param maxStops
      * @return
      */
-    public String numberOfRouteMaxStops(String pointA, String pointB, int maxStops) {
-        stack.clear();
+    public String numberOfRouteMaxStops(String pointA, String pointB, int maxStops, Deque<String> container) {
         int ret = 0;
         int a = cities.indexOf(pointA);
         if(a==-1) return pointA + "is not exist";
@@ -316,13 +243,13 @@ public class Trains {
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (i == b) ret++;
-                ret += handleNumberOfRoute(i, b, maxStops - 1, pointA + "-" + cities.get(i));
+                ret += handleNumberOfRoute(i, b, maxStops - 1, pointA + "-" + cities.get(i), container);
             }
         }
         return String.valueOf(ret);
     }
 
-    private int handleNumberOfRoute(int a, int b, int maxStops, String route) {
+    private int handleNumberOfRoute(int a, int b, int maxStops, String route, Deque<String> container) {
         int ret = 0;
         if (maxStops == 0) return ret;
         int[] line = data[a];
@@ -330,9 +257,9 @@ public class Trains {
             if (line[i] != -1) {
                 if (i == b) {
                     ret++;
-                    stack.push(route + "-" + cities.get(i));
+                    container.push(route + "-" + cities.get(i));
                 }
-                ret += handleNumberOfRoute(i, b, maxStops - 1, route + "-" + cities.get(i));
+                ret += handleNumberOfRoute(i, b, maxStops - 1, route + "-" + cities.get(i), container);
             }
         }
         return ret;
