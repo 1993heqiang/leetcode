@@ -3,8 +3,7 @@ package com.heqiang.test;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -16,14 +15,22 @@ import java.util.Deque;
  */
 public class TrainsTest{
     public Trains trains;
+    public static final String DEFAULT_INPUT = " AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
+    public static final String FILE_PATH = "";
 
     @Before
     public void setUp() {
-        String defaultInput = " AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7";
-        String path = "";
-        String input = file2String(path);
-        if("".equals(input)){
-            input = defaultInput;
+        String input;
+        try{
+            if(FILE_PATH.isEmpty()){
+                input = DEFAULT_INPUT;
+            }else {
+                input = file2String(FILE_PATH);
+            }
+        }catch (Exception e){
+            System.out.println(getExceptionInfo(e));
+            System.out.println("执行默认输入 Graph:"+DEFAULT_INPUT);
+            input = DEFAULT_INPUT;
         }
         trains = new Trains(input);
     }
@@ -96,7 +103,7 @@ public class TrainsTest{
         }
     }
 
-    public static String file2String(String path){
+    public static String file2String(String path) throws IOException {
         File input = new File(path);
         if(!input.exists()||!input.isFile()){
             throw new RuntimeException("File not exist");
@@ -108,8 +115,6 @@ public class TrainsTest{
             char[] chars = new char[fileLen];
             fileReader.read(chars);
             return String.valueOf(chars);
-        }catch (Exception e){
-
         }finally {
             if(fileReader!=null){
                 try {
@@ -119,7 +124,13 @@ public class TrainsTest{
                 }
             }
         }
-        return "";
+    }
+
+    public static String getExceptionInfo(Exception e) {
+        if( e == null) return "";
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(baos));
+        return baos.toString();
     }
 
 }

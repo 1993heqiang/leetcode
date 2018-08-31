@@ -1,14 +1,17 @@
 package com.heqiang.test;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Trains {
 
     public int[][] data;
     public List<String> cities;
+    public static final String ROUTE_SPLIT_CHAR = "->";
 
 
     public Trains(String input) {
@@ -17,24 +20,22 @@ public class Trains {
     }
 
     public int[][] parseInput(String input) {
-        //筛选出city
-        Set<String> citiesTemp = new HashSet<>();
-        char[] letterArr = input.toCharArray();
-        for (int i = 0; i < letterArr.length; i++) {
-            char letter = letterArr[i];
-            if ('A' <= letter && letter <= 'Z') {
-                citiesTemp.add(String.valueOf(letterArr[i]));
-            }
+        String[] points = input.replaceAll("\\s", "").split(",");
+        String pattern = "^[A-Za-z]{2}[1-9]+$";
+        Pattern r = Pattern.compile(pattern);
+        boolean inputValidity = Arrays.stream(points).allMatch(e -> r.matcher(e).matches());
+        if (!inputValidity) {
+            throw new RuntimeException("Input is illegal");
         }
-        //存入cities 集合
-        citiesTemp.stream().forEach(e -> cities.add(e));
+        //筛选出city
+        String[] temp = input.replaceAll("[^a-zA-Z]", "").split("");
+        cities = Arrays.stream(temp).distinct().collect(Collectors.toList());
         int size = cities.size();
         int[][] result = new int[size][size];
         for (int i = 0; i < size; i++) {
             Arrays.fill(result[i], -1);
         }
-        List<String> points = Arrays.stream(input.split(",")).map(e -> e.trim()).collect(Collectors.toList());
-        points.stream().forEach(e -> {
+        Arrays.stream(points).forEach(e -> {
             //标出所有的有关系的点
             String pointA = String.valueOf(e.charAt(0));
             String pointB = String.valueOf(e.charAt(1));
@@ -54,18 +55,18 @@ public class Trains {
      */
     public String numberOfRoutes(String pointA, String pointB, int maxLength, Deque<String> deque) {
         int a = cities.indexOf(pointA);
-        if(a==-1) return pointA + "is not exist";
+        if (a == -1) return pointA + " is not exist";
         int b = cities.indexOf(pointB);
-        if(b==-1) return pointB + "is not exist";
+        if (b == -1) return pointB + " is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (i == b) {
                     if (line[i] < maxLength) {
-                        deque.push(String.valueOf(pointA + "-" + pointB));
+                        deque.push(String.valueOf(pointA + ROUTE_SPLIT_CHAR + pointB));
                     }
                 }
-                traverse1(i, b, pointA + "-" + cities.get(i), line[i], maxLength, deque);
+                traverse1(i, b, pointA + ROUTE_SPLIT_CHAR + cities.get(i), line[i], maxLength, deque);
             }
         }
         return String.valueOf(deque.size());
@@ -82,10 +83,10 @@ public class Trains {
                 }
                 if (i == b) {
                     if (maxLength > temp) {
-                        deque.push(route + "-" + cities.get(i));
+                        deque.push(route + ROUTE_SPLIT_CHAR + cities.get(i));
                     }
                 }
-                traverse1(i, b, route + "-" + cities.get(i), temp, maxLength, deque);
+                traverse1(i, b, route + ROUTE_SPLIT_CHAR + cities.get(i), temp, maxLength, deque);
             }
         }
     }
@@ -129,21 +130,21 @@ public class Trains {
      */
     public String lengthOfShortestRoute(String pointA, String pointB, Deque<String> deque) {
         int a = cities.indexOf(pointA);
-        if(a==-1) return pointA + "is not exist";
+        if (a == -1) return pointA + " is not exist";
         int b = cities.indexOf(pointB);
-        if(b==-1) return pointB + "is not exist";
+        if (b == -1) return pointB + " is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (i == b) {
-                    deque.push(String.valueOf(pointA + "-" + pointB));
+                    deque.push(String.valueOf(pointA + ROUTE_SPLIT_CHAR + pointB));
                 }
-                traverse(i, b, pointA + "-" + cities.get(i), line[i], deque);
+                traverse(i, b, pointA + ROUTE_SPLIT_CHAR + cities.get(i), line[i], deque);
             }
         }
         if(!deque.isEmpty()){
             String shortestRoute = deque.peekFirst();
-            String[] cities = shortestRoute.split("-");
+            String[] cities = shortestRoute.split(ROUTE_SPLIT_CHAR);
             return distanceOfRoute(cities);
         }
         return "-1";
@@ -155,7 +156,7 @@ public class Trains {
         int minLength;
         if(!deque.isEmpty()){
             String shortestRoute = deque.peekFirst();
-            String[] cities = shortestRoute.split("-");
+            String[] cities = shortestRoute.split(ROUTE_SPLIT_CHAR);
             minLength =  Integer.valueOf(distanceOfRoute(cities));
         }else {
             minLength = -1;
@@ -168,18 +169,19 @@ public class Trains {
                 }
                 if (i == b) {
                     if (minLength == -1) {
-                        deque.push(route + "-" + cities.get(i));
+                        deque.push(route + ROUTE_SPLIT_CHAR + cities.get(i));
                     } else if (minLength == temp) {
-                        deque.push(route + "-" + cities.get(i));
+                        deque.push(route + ROUTE_SPLIT_CHAR + cities.get(i));
                     } else if (minLength > temp) {
                         deque.clear();
-                        deque.push(route + "-" + cities.get(i));
+                        deque.push(route + ROUTE_SPLIT_CHAR + cities.get(i));
                     }
                     continue;
                 } else if (route.contains(cities.get(i))) {
+                    //避免路径中出现环
                     continue;
                 }
-                traverse(i, b, route + "-" + cities.get(i), temp, deque);
+                traverse(i, b, route + ROUTE_SPLIT_CHAR + cities.get(i), temp, deque);
             }
         }
     }
@@ -194,16 +196,16 @@ public class Trains {
      */
     public String numberOfRouteExactlyStops(String pointA, String pointB, int stops, Deque<String> deque) {
         int a = cities.indexOf(pointA);
-        if(a==-1) return pointA + "is not exist";
+        if (a == -1) return pointA + " is not exist";
         int b = cities.indexOf(pointB);
-        if(b==-1) return pointB + "is not exist";
+        if (b == -1) return pointB + " is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (stops == 1 && i == b) {
-                    deque.push(String.valueOf(pointA + "-" + pointB));
+                    deque.push(String.valueOf(pointA + ROUTE_SPLIT_CHAR + pointB));
                 }
-                traverse2(i, b, pointA + "-" + cities.get(i), stops - 1, deque);
+                traverse2(i, b, pointA + ROUTE_SPLIT_CHAR + cities.get(i), stops - 1, deque);
             }
         }
         return String.valueOf(deque.size());
@@ -214,10 +216,10 @@ public class Trains {
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1) {
                 if (stops > 1) {
-                    traverse2(i, b, route + "-" + cities.get(i), stops - 1, deque);
+                    traverse2(i, b, route + ROUTE_SPLIT_CHAR + cities.get(i), stops - 1, deque);
                 } else {
                     if (i == b) {
-                        deque.push(route + "-" + cities.get(i));
+                        deque.push(route + ROUTE_SPLIT_CHAR + cities.get(i));
                         return;
                     }
                 }
@@ -236,14 +238,14 @@ public class Trains {
     public String numberOfRouteMaxStops(String pointA, String pointB, int maxStops, Deque<String> container) {
         int ret = 0;
         int a = cities.indexOf(pointA);
-        if(a==-1) return pointA + "is not exist";
+        if (a == -1) return pointA + " is not exist";
         int b = cities.indexOf(pointB);
-        if(b==-1) return pointB + "is not exist";
+        if (b == -1) return pointB + " is not exist";
         int[] line = data[a];
         for (int i = 0; i < line.length; i++) {
             if (line[i] != -1 && a != i) {
                 if (i == b) ret++;
-                ret += handleNumberOfRoute(i, b, maxStops - 1, pointA + "-" + cities.get(i), container);
+                ret += handleNumberOfRoute(i, b, maxStops - 1, pointA + ROUTE_SPLIT_CHAR + cities.get(i), container);
             }
         }
         return String.valueOf(ret);
@@ -257,9 +259,9 @@ public class Trains {
             if (line[i] != -1) {
                 if (i == b) {
                     ret++;
-                    container.push(route + "-" + cities.get(i));
+                    container.push(route + ROUTE_SPLIT_CHAR + cities.get(i));
                 }
-                ret += handleNumberOfRoute(i, b, maxStops - 1, route + "-" + cities.get(i), container);
+                ret += handleNumberOfRoute(i, b, maxStops - 1, route + ROUTE_SPLIT_CHAR + cities.get(i), container);
             }
         }
         return ret;
