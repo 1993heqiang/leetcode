@@ -1,5 +1,7 @@
 package leetcodetop.bytedance;
 
+import leetcodetop.ListNode;
+
 public class ReverseNodesInKGroup {
     public ListNode reverseKGroup(ListNode head, int k) {
         ListNode hair = new ListNode(0);
@@ -39,22 +41,5 @@ public class ReverseNodesInKGroup {
             p = nex;
         }
         return new ListNode[]{tail, head};
-    }
-
-    public class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
     }
 }

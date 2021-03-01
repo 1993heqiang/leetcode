@@ -1,5 +1,7 @@
 package com.rookie.leetcode;
 
+import leetcodetop.ListNode;
+
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,14 +37,5 @@ public class SortList {
         }
         list.get(size - 1).next = null;
         return list.get(0);
-    }
-
-    private static class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode(int x) {
-            val = x;
-        }
     }
 }
